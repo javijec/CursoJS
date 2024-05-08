@@ -3,7 +3,12 @@ let opcion;
 let costototal;
 
 let camponombre = document.getElementById("nombre");
+let trabajo = document.getElementById("trabajo");
+let material = document.getElementById("material");
+
 camponombre.addEventListener("change", CargarNombre);
+trabajo.addEventListener("click", ElegirOpcion);
+material.addEventListener("click", ElegirOpcion);
 
 function CargarNombre() {
   let nombre = camponombre.value;
@@ -17,31 +22,29 @@ function CargarNombre() {
   return nombre;
 }
 
-let trabajo = document.getElementById("trabajo");
-let material = document.getElementById("material");
-
-trabajo.addEventListener("click", ElegirOpcion);
-material.addEventListener("click", ElegirOpcion);
-
 function ElegirOpcion() {
   opcion = Number(material.checked) * 2 + Number(trabajo.checked);
   console.log(opcion);
   switch (opcion) {
     case 1:
-      mostrarCostosmano()
-      ocultarMateriales()
+      mostrarCostosmano();
+      ocultarMateriales();
+      BotonCostos(opcion);
       break;
     case 2:
       mostrarMateriales();
-      ocultarCostosmano()
+      ocultarCostosmano();
+      BotonCostos(opcion);
       break;
     case 3:
       mostrarCostosmano();
       mostrarMateriales();
+      BotonCostos(opcion);
       break;
     default:
       ocultarMateriales();
       ocultarCostosmano();
+      BotonCostos(opcion);
       break;
   }
   return opcion;
@@ -60,20 +63,25 @@ function CargarMateriales() {
 
 function mostrarMateriales() {
   let materialeslista = document.getElementById("materiales-lista");
-  let HTML = "<fieldset>" +
-"<legend>Costo de Materiales</legend>";
-  materiales.forEach(function (material, index) {
-    HTML +="<input type='number' id='material" +
-      index +
-      "' name='material" +
-      index +
-      "'/>" +
-      "<label for='material" +
-      index +
-      "'>" +
-      material.nombre +
-      "</label><br>";
-  });
+  let HTML = "<fieldset>" + "<legend>Costo de Materiales</legend>";
+  if (localStorage.getItem("materiales")) {
+    materiales.forEach(function (material, index) {
+      HTML +=
+        "<input type='number' id='material" +
+        index +
+        "' name='material" +
+        index +
+        "'/>" +
+        "<label for='material" +
+        index +
+        "'>" +
+        material.nombre +
+        "</label><br>";
+    });
+  } else {
+    HTML += "No hay materiales en la base de datos";
+  }
+
   HTML += "</fieldset>";
   materialeslista.innerHTML = HTML;
 }
@@ -103,25 +111,25 @@ function ocultarMateriales() {
 
 function ocultarCostosmano() {
   let costomanoO = document.getElementById("Costosmanodeobra");
-  let HTML ="";
+  let HTML = "";
   costomanoO.innerHTML = HTML;
 }
 
-
+function BotonCostos(opcion) {
+  let calcular = document.getElementById("calcular");
+  let HTML;
+  if (opcion == 0) {
+    HTML = "";
+  } else {
+    HTML = "<button id='botoncalc'>Calcular</button>";
+  }
+  console.log(opcion)
+  calcular.innerHTML = HTML;
+}
 
 CargarMateriales();
 
 /*
-
-do {
-  nombre = Nombre();
-  console.log(nombre);
-  if (nombre !== null && nombre.trim().length < 1) {
-    alert("no ingresaste ningun nombre")
-  }
-} while (nombre !== null && nombre.trim().length < 1);
-
-
 
 function CostoHora() {
   let horas = parseFloat(prompt("¿Cuantas horas trabaja por dia?"));
