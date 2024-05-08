@@ -2,21 +2,38 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <p>el costo de la hora es 500$<br>
-        el costo del metro de cable es 2$<br>
-        el costo del enchufe es 5$<br>
-        presione F5 para recargar</p>
-    <button></button>
+  <header>
+    <a href="materiales.html">MATERIALES</a>
+  </header>
+  <H1>calculadora de costos</H1> <br>
+  <label for="nombre">Nombre</label>
+  <input type="text" id="nombre" placeholder="Nombre">
+  <fieldset>
+    <legend>Opciones</legend>
+    <div>
+      <input type="checkbox" id="trabajo" name="Costo de trabajo"/>
+      <label for="trabajo">Costo de trabajo</label>
+    </div>
+    <div>
+      <input type="checkbox" id="material" name="materiales" />
+      <label for="material">Costo de materiales</label>
+    </div>
+  </fieldset>
+    <div id="Costosmanodeobra">
 
+    </div>
+    <div id="materiales-lista">
 
+    </div>
 
-    <script src="js/main.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>

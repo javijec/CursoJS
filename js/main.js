@@ -1,11 +1,117 @@
-let costo;
 let nombre;
-const valorh = 500;
 let opcion;
+let costototal;
 
-let materiales = [{"material": "cable","costo": 1,},{"material": "enchufe","costo": 2,}]
+let camponombre = document.getElementById("nombre");
+camponombre.addEventListener("change", CargarNombre);
 
-alert("Bienvenido a la calculadora de costos");
+function CargarNombre() {
+  let nombre = camponombre.value;
+  let contieneNumerosOSimbolos =
+    /[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(nombre);
+  if (contieneNumerosOSimbolos) {
+    camponombre.classList.add("alert");
+  } else {
+    camponombre.classList.remove("alert");
+  }
+  return nombre;
+}
+
+let trabajo = document.getElementById("trabajo");
+let material = document.getElementById("material");
+
+trabajo.addEventListener("click", ElegirOpcion);
+material.addEventListener("click", ElegirOpcion);
+
+function ElegirOpcion() {
+  opcion = Number(material.checked) * 2 + Number(trabajo.checked);
+  console.log(opcion);
+  switch (opcion) {
+    case 1:
+      mostrarCostosmano()
+      ocultarMateriales()
+      break;
+    case 2:
+      mostrarMateriales();
+      ocultarCostosmano()
+      break;
+    case 3:
+      mostrarCostosmano();
+      mostrarMateriales();
+      break;
+    default:
+      ocultarMateriales();
+      ocultarCostosmano();
+      break;
+  }
+  return opcion;
+}
+
+function CargarMateriales() {
+  if (localStorage.getItem("materiales")) {
+    // Si existe, cargarlo en el array "materiales"
+    materiales = JSON.parse(localStorage.getItem("materiales"));
+  } else {
+    // Si no existe, crear un array vacío
+    materiales = [];
+  }
+  return materiales;
+}
+
+function mostrarMateriales() {
+  let materialeslista = document.getElementById("materiales-lista");
+  let HTML = "<fieldset>" +
+"<legend>Costo de Materiales</legend>";
+  materiales.forEach(function (material, index) {
+    HTML +="<input type='number' id='material" +
+      index +
+      "' name='material" +
+      index +
+      "'/>" +
+      "<label for='material" +
+      index +
+      "'>" +
+      material.nombre +
+      "</label><br>";
+  });
+  HTML += "</fieldset>";
+  materialeslista.innerHTML = HTML;
+}
+
+function mostrarCostosmano() {
+  let costomanoO = document.getElementById("Costosmanodeobra");
+  let HTML =
+    "<fieldset>" +
+    "<legend>Costos mano de obra</legend>" +
+    "<div>" +
+    "<input type='number' id='htrabajo' name='HoradeTrabajo'/>" +
+    "<label for='htrabajo'>Horas de Trabajo/dia</label>" +
+    "</div>" +
+    "<div>" +
+    "<input type='number' id='dtrabajo' name='DiasdeTrabajo' />" +
+    "<label for='dtrabajo'>Costo de materiales</label>" +
+    "</div>" +
+    "</fieldset>";
+  costomanoO.innerHTML = HTML;
+}
+
+function ocultarMateriales() {
+  let materialeslista = document.getElementById("materiales-lista");
+  let HTML = "";
+  materialeslista.innerHTML = HTML;
+}
+
+function ocultarCostosmano() {
+  let costomanoO = document.getElementById("Costosmanodeobra");
+  let HTML ="";
+  costomanoO.innerHTML = HTML;
+}
+
+
+
+CargarMateriales();
+
+/*
 
 do {
   nombre = Nombre();
@@ -15,34 +121,7 @@ do {
   }
 } while (nombre !== null && nombre.trim().length < 1);
 
-opcion = parseFloat(
-  prompt(
-    "ingrese 1 para calcular costos laborales, 2 para calcular costos de materiales, 3 para calcularlos todos"
-  )
-);
 
-switch (opcion) {
-  case 1:
-    costo = CostoHora();
-    MensajeCosto();
-    break;
-  case 2:
-    costo = CostoMateriales();
-    MensajeCosto();
-    break;
-  case 3:
-    costo = CostoHora() + CostoMateriales();
-    MensajeCosto();
-    break;
-  default:
-    alert("No ingreso una opcion valida");
-    break;
-}
-
-function Nombre() {
-  let nombre1 = prompt("¿Cual es tu nombre?");
-  return nombre1;
-}
 
 function CostoHora() {
   let horas = parseFloat(prompt("¿Cuantas horas trabaja por dia?"));
@@ -68,3 +147,4 @@ function buscarCosto(materialABuscar) {
         }
     }
 }
+*/
