@@ -2,3 +2,14 @@
     border: 2px solid red;
     background-color: rgba(255, 0, 0, 0.186);
 }
+#calcular{
+    display: none;
+}
+
+#Costosmanodeobra{
+    display: none;
+}
+
+#materiales-lista{
+    display: none;
+}

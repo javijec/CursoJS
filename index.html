@@ -16,7 +16,7 @@
   </header>
   <H1>calculadora de costos</H1> <br>
 
-  <label for="nombre">Nombre</label>
+  <label for="nombre">Nombre del cliente</label>
   <input type="text" id="nombre" placeholder="Nombre">
 
   <fieldset>
@@ -32,15 +32,26 @@
   </fieldset>
 
   <div id="Costosmanodeobra">
-
+    <fieldset>
+      <legend>Costos mano de obra</legend>
+      <div>
+        <input type='number' id='htrabajo' name='HoradeTrabajo' />
+        <label for='htrabajo'>Horas de Trabajo/dia</label>
+      </div>
+      <div>
+        <input type='number' id='dtrabajo' name='DiasdeTrabajo' />
+        <label for='dtrabajo'>Costo de materiales</label>
+      </div>
+    </fieldset>
   </div>
 
   <div id="materiales-lista">
+    
 
   </div>
-  
+
   <div id="calcular">
-    
+    <button id='botoncalc'>Calcular</button>
   </div>
 
   <script src="js/main.js"></script>

@@ -5,10 +5,12 @@ let costototal;
 let camponombre = document.getElementById("nombre");
 let trabajo = document.getElementById("trabajo");
 let material = document.getElementById("material");
+let botoncalc = document.getElementById('botoncalc')
 
 camponombre.addEventListener("change", CargarNombre);
 trabajo.addEventListener("click", ElegirOpcion);
 material.addEventListener("click", ElegirOpcion);
+botoncalc.addEventListener("click", Calcular)
 
 function CargarNombre() {
   let nombre = camponombre.value;
@@ -83,46 +85,35 @@ function mostrarMateriales() {
 
   HTML += "</fieldset>";
   materialeslista.innerHTML = HTML;
+  materialeslista.style.display = 'block'
 }
 
 function mostrarCostosmano() {
   let costomanoO = document.getElementById("Costosmanodeobra");
-  let HTML =
-    "<fieldset>" +
-    "<legend>Costos mano de obra</legend>" +
-    "<div>" +
-    "<input type='number' id='htrabajo' name='HoradeTrabajo'/>" +
-    "<label for='htrabajo'>Horas de Trabajo/dia</label>" +
-    "</div>" +
-    "<div>" +
-    "<input type='number' id='dtrabajo' name='DiasdeTrabajo' />" +
-    "<label for='dtrabajo'>Costo de materiales</label>" +
-    "</div>" +
-    "</fieldset>";
-  costomanoO.innerHTML = HTML;
+  costomanoO.style.display = 'block'
 }
 
 function ocultarMateriales() {
   let materialeslista = document.getElementById("materiales-lista");
-  let HTML = "";
-  materialeslista.innerHTML = HTML;
+  materialeslista.style.display = 'none';
 }
 
 function ocultarCostosmano() {
   let costomanoO = document.getElementById("Costosmanodeobra");
-  let HTML = "";
-  costomanoO.innerHTML = HTML;
+  costomanoO.style.display = 'none';
 }
 
 function BotonCostos(opcion) {
   let calcular = document.getElementById("calcular");
-  let HTML;
   if (opcion == 0) {
-    HTML = "";
+    calcular.style.display = 'none';
   } else {
-    HTML = "<button id='botoncalc'>Calcular</button>";
+    calcular.style.display = 'block';
   }
-  calcular.innerHTML = HTML;
+}
+
+function Calcular(){
+  console.log('los costos son')
 }
 
 CargarMateriales();
