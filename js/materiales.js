@@ -1,5 +1,6 @@
 let index;
 let materiales;
+let formulario = document.getElementById("formulario-agregar");
 
 // Verificar si existe el JSON en el localStorage
 function CargarMateriales() {
@@ -69,7 +70,7 @@ function cargarenlocalstorage(){
     localStorage.setItem("materiales", materialesJson);
 }
 
-document.getElementById("formulario-agregar").addEventListener("submit", agregarMaterial);
+formulario.addEventListener("submit", agregarMaterial);
         
 // Cargar los materiales del localstorage si existen
 CargarMateriales()

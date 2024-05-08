@@ -24,7 +24,6 @@ function CargarNombre() {
 
 function ElegirOpcion() {
   opcion = Number(material.checked) * 2 + Number(trabajo.checked);
-  console.log(opcion);
   switch (opcion) {
     case 1:
       mostrarCostosmano();
@@ -123,7 +122,6 @@ function BotonCostos(opcion) {
   } else {
     HTML = "<button id='botoncalc'>Calcular</button>";
   }
-  console.log(opcion)
   calcular.innerHTML = HTML;
 }
 
