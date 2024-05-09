@@ -6,7 +6,8 @@ let materiales;
 const calcularButton = document.getElementById("botoncalc");
 const formulario2 = document.getElementById("formulario2");
 
-nombreInput.addEventListener("change", cargarNombre);
+/* nombreInput.addEventListener("change", cargarNombre);
+ */
 calcularButton.addEventListener("click", calcular);
 formulario2.addEventListener("submit", actualizarValorManodeObra);
 
@@ -79,10 +80,8 @@ function guardarManodeObraEnLocalStorage() {
 
 function cargarValorManodeObra() {
   const costo2 = document.getElementById("costomano2");
-
   if (manoDeObra.valor !== undefined) {
     costomano2.placeholder = manoDeObra.valor;
-  } else {
   }
 }
 
@@ -107,6 +106,7 @@ function cargarLocalStorage() {
     manoDeObra = { valor: 1 };
     localStorage.setItem("costo", JSON.stringify(manoDeObra));
   }
+  
 }
 
 
