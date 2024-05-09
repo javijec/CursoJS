@@ -2,17 +2,6 @@ let index;
 let materiales;
 let formulario = document.getElementById("formulario-agregar");
 
-// Verificar si existe el JSON en el localStorage
-function CargarMateriales() {
-  if (localStorage.getItem("materiales")) {
-    // Si existe, cargarlo en el array "materiales"
-    materiales = (JSON.parse(localStorage.getItem("materiales")))
-  } else {
-    // Si no existe, crear un array vacío
-    materiales = [];
-  }
-  return materiales;
-}
 
 function mostrarMateriales() {
   let materialeslista = document.getElementById("materiales-lista");
@@ -72,7 +61,31 @@ function cargarenlocalstorage(){
 
 formulario.addEventListener("submit", agregarMaterial);
         
-// Cargar los materiales del localstorage si existen
-CargarMateriales()
+function CargarManodeObra() {
+  if (localStorage.getItem("costo")) {
+    mano = JSON.parse(localStorage.getItem("costo"));
+    console.log("hay valores en local");
+  } else {
+    mano = { valor: 0 };
+    const costoJson = JSON.stringify(mano);
+    localStorage.setItem("costo", costoJson);
+    console.log("no hay valores en local");
+  }
+}
+
+function CargarMateriales() {
+  if (localStorage.getItem("materiales")) {
+    // Si existe, cargarlo en el array "materiales"
+    materiales = JSON.parse(localStorage.getItem("materiales"));
+  } else {
+    // Si no existe, crear un array vacío
+    materiales = [];
+  }
+  return materiales;
+}
+
+CargarManodeObra();
+CargarMateriales();
+
 // Mostrar la lista de materiales al cargar la página
 mostrarMateriales();

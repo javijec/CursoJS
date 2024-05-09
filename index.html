@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="dark-mode">
   <header>
     <a href="index.html">INICIO</a>
     <a href="pages/materiales.html">MATERIALES</a>
@@ -34,13 +34,16 @@
   <div id="Costosmanodeobra">
     <fieldset>
       <legend>Costos mano de obra</legend>
+      <div id="costomano">
+hola
+      </div>
       <div>
-        <input type='number' id='htrabajo' name='HoradeTrabajo' />
+        <input type='number' id='htrabajo' name='htrabajo' />
         <label for='htrabajo'>Horas de Trabajo/dia</label>
       </div>
       <div>
-        <input type='number' id='dtrabajo' name='DiasdeTrabajo' />
-        <label for='dtrabajo'>Costo de materiales</label>
+        <input type='number' id='dtrabajo' name='dtrabajo' />
+        <label for='dtrabajo'>Dias de Trabajo</label>
       </div>
     </fieldset>
   </div>
@@ -52,6 +55,10 @@
 
   <div id="calcular">
     <button id='botoncalc'>Calcular</button>
+  </div>
+
+  <div id="costo">
+
   </div>
 
   <script src="js/main.js"></script>

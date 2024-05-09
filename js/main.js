@@ -1,16 +1,17 @@
 let nombre;
 let opcion;
 let costototal;
+let mano;
 
 let camponombre = document.getElementById("nombre");
 let trabajo = document.getElementById("trabajo");
 let material = document.getElementById("material");
-let botoncalc = document.getElementById('botoncalc')
+let botoncalc = document.getElementById("botoncalc");
 
 camponombre.addEventListener("change", CargarNombre);
 trabajo.addEventListener("click", ElegirOpcion);
 material.addEventListener("click", ElegirOpcion);
-botoncalc.addEventListener("click", Calcular)
+botoncalc.addEventListener("click", Calcular);
 
 function CargarNombre() {
   let nombre = camponombre.value;
@@ -30,36 +31,22 @@ function ElegirOpcion() {
     case 1:
       mostrarCostosmano();
       ocultarMateriales();
-      BotonCostos(opcion);
       break;
     case 2:
       mostrarMateriales();
       ocultarCostosmano();
-      BotonCostos(opcion);
       break;
     case 3:
       mostrarCostosmano();
       mostrarMateriales();
-      BotonCostos(opcion);
       break;
     default:
       ocultarMateriales();
       ocultarCostosmano();
-      BotonCostos(opcion);
       break;
   }
+  BotonCostos(opcion);
   return opcion;
-}
-
-function CargarMateriales() {
-  if (localStorage.getItem("materiales")) {
-    // Si existe, cargarlo en el array "materiales"
-    materiales = JSON.parse(localStorage.getItem("materiales"));
-  } else {
-    // Si no existe, crear un array vacío
-    materiales = [];
-  }
-  return materiales;
 }
 
 function mostrarMateriales() {
@@ -77,6 +64,7 @@ function mostrarMateriales() {
         index +
         "'>" +
         material.nombre +
+        " - $" + material.valor
         "</label><br>";
     });
   } else {
@@ -85,37 +73,80 @@ function mostrarMateriales() {
 
   HTML += "</fieldset>";
   materialeslista.innerHTML = HTML;
-  materialeslista.style.display = 'block'
+  materialeslista.style.display = "block";
 }
 
 function mostrarCostosmano() {
   let costomanoO = document.getElementById("Costosmanodeobra");
-  costomanoO.style.display = 'block'
+  let costomano = document.getElementById("costomano");
+  let HTML = "";	
+  costomano.innerHTML = "el valor de la hora de mano de obras es " + mano.valor + " pesos";
+  costomanoO.style.display = "block";
 }
 
 function ocultarMateriales() {
   let materialeslista = document.getElementById("materiales-lista");
-  materialeslista.style.display = 'none';
+  materialeslista.style.display = "none";
 }
 
 function ocultarCostosmano() {
   let costomanoO = document.getElementById("Costosmanodeobra");
-  costomanoO.style.display = 'none';
+  costomanoO.style.display = "none";
 }
 
 function BotonCostos(opcion) {
   let calcular = document.getElementById("calcular");
   if (opcion == 0) {
-    calcular.style.display = 'none';
+    calcular.style.display = "none";
   } else {
-    calcular.style.display = 'block';
+    calcular.style.display = "block";
   }
 }
 
-function Calcular(){
-  console.log('los costos son')
+function Calcular() {
+  let costo = document.getElementById("costo");
+  let htrabajo = document.getElementById("htrabajo").value;
+  let dtrabajo = document.getElementById("dtrabajo").value;
+  let mano = JSON.parse(localStorage.getItem("costo")).valor;
+
+  
+  
+  
+  
+  let HTML = "";
+  if (mano == 0 || htrabajo == 0 || dtrabajo == 0) {
+    HTML = "el valor de la hora de mano de obras no ha sido cargado o alguno de los valores es 0";
+  } else {
+    let precio = htrabajo * dtrabajo * mano;
+    HTML = "los costos son" + precio + "$";
+  }
+
+  costo.innerHTML = HTML;
+}
+function CargarManodeObra() {
+  if (localStorage.getItem("costo")) {
+    mano = JSON.parse(localStorage.getItem("costo"));
+    console.log("hay valores en local");
+  } else {
+    mano = { valor: 0 };
+    const costoJson = JSON.stringify(mano);
+    localStorage.setItem("costo", costoJson);
+    console.log("no hay valores en local");
+  }
 }
 
+function CargarMateriales() {
+  if (localStorage.getItem("materiales")) {
+    // Si existe, cargarlo en el array "materiales"
+    materiales = JSON.parse(localStorage.getItem("materiales"));
+  } else {
+    // Si no existe, crear un array vacío
+    materiales = [];
+  }
+  return materiales;
+}
+
+CargarManodeObra();
 CargarMateriales();
 
 /*
