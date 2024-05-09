@@ -84,8 +84,6 @@ function CargarMateriales() {
   return materiales;
 }
 
-CargarManodeObra();
-CargarMateriales();
 
 // Mostrar la lista de materiales al cargar la página
 mostrarMateriales();

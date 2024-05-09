@@ -16,9 +16,9 @@
   </header>
   <H1>calculadora de costos</H1> <br>
 
-  <label for="nombre">Nombre del cliente</label>
+<!--   <label for="nombre">Nombre del cliente</label>
   <input type="text" id="nombre" placeholder="Nombre">
-
+ -->
   <fieldset>
     <legend>Opciones</legend>
     <div>
@@ -60,6 +60,17 @@ hola
   <div id="costo">
 
   </div>
+  <div id="materiales-lista">
+    <!-- Aquí se mostrará la lista de materiales -->
+  </div>
+  <form id="formulario-agregar">
+    <label for="nombre-material">Nombre del material:</label>
+    <input type="text" id="nombre-material" required>
+    <label for="costo-material">Costo del material:</label>
+    <input type="number" id="costo-material" required>
+    <button type="submit">Agregar</button>
+  </form>
+
 
   <script src="js/main.js"></script>
 </body>
