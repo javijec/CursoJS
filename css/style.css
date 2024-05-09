@@ -3,28 +3,49 @@
     background-color: rgba(255, 0, 0, 0.186);
 }
 
+body {
+    background-color: #f8f9fa; /* Color de fondo */
+  }
 
-    /* Estilos personalizados */
-    body {
-        padding-top: 20px;
-      }
-  
-      .container {
-        max-width: 600px;
-      }
-  
-      .main-title {
-        margin-bottom: 20px;
-      }
-  
-      .form-group {
-        margin-bottom: 20px;
-      }
-  
-      #calcular {
-        margin-top: 20px;
-      }
-  
-      #costo {
-        margin-top: 20px;
-      }
+  header {
+    background-color: #343a40; /* Color de fondo del encabezado */
+    padding: 20px;
+    color: white; /* Color del texto */
+    text-align: center;
+  }
+
+  main {
+    background-color: #fff; /* Color de fondo del contenido principal */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  }
+
+  .main-title {
+    color: #007bff; /* Color del título principal */
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    font-weight: bold; /* Texto en negrita para las etiquetas de formulario */
+  }
+
+  .form-control {
+    margin-bottom: 10px; /* Espacio entre elementos de formulario */
+  }
+
+  .btn-primary {
+    background-color: #007bff; /* Color de fondo del botón primario */
+    border-color: #007bff; /* Color del borde del botón primario */
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3; /* Color de fondo del botón primario al pasar el ratón */
+    border-color: #0056b3; /* Color del borde del botón primario al pasar el ratón */
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #6c757d; /* Color del texto del pie de página */
+  }

@@ -5,13 +5,13 @@ const nombreInput = document.getElementById("nombre");
 const trabajoCheckbox = document.getElementById("trabajo");
 const materialCheckbox = document.getElementById("material");
 const calcularButton = document.getElementById("botoncalc");
-const formulario = document.getElementById("formulario2");
+const formulario2 = document.getElementById("formulario2");
 
 nombreInput.addEventListener("change", cargarNombre);
 trabajoCheckbox.addEventListener("click", elegirOpcion);
 materialCheckbox.addEventListener("click", elegirOpcion);
 calcularButton.addEventListener("click", calcular);
-formulario.addEventListener("submit", actualizarValorManodeObra);
+formulario2.addEventListener("submit", actualizarValorManodeObra);
 
 
 function cargarNombre() {
@@ -28,6 +28,7 @@ function elegirOpcion() {
 
 function mostrarCostosMano(opcion) {
   const costomano = document.getElementById("costomano");
+  
   costomano.innerHTML = `El valor de la hora de mano de obra es ${manoDeObra.valor} pesos`;
     
   }
@@ -119,7 +120,7 @@ function actualizarValorManodeObra(event){
   const costo2 = document.getElementById("costomano2");
   event.preventDefault();
   manoDeObra.valor = costo2.value;
-  texto.innerHTML = `El valor de la hora de mano de obra es ${manoDeObra.valor} pesos`;
+  costomano2.placeholder = costo2.value;
   guardarManodeObraEnLocalStorage();
 }
 
@@ -128,11 +129,11 @@ function guardarManodeObraEnLocalStorage(){
 }
 
 function cargarValorManodeObra(){
-  const texto = document.getElementById('texto');
+  const costo2 = document.getElementById("costomano2");
+
   if (manoDeObra.valor !== undefined) {
-      texto.innerHTML = `El valor de la hora de mano de obra es ${manoDeObra.valor} pesos`;
+    costomano2.placeholder = manoDeObra.valor;
   } else {
-      texto.innerHTML = "No se ha cargado ningún valor para la hora de mano de obra.";
   }
 }
 
