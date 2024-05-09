@@ -2,14 +2,29 @@
     border: 2px solid red;
     background-color: rgba(255, 0, 0, 0.186);
 }
-#calcular{
-    display: none;
-}
 
-#Costosmanodeobra{
-    display: none;
-}
 
-#materiales-lista{
-    display: none;
-}
+    /* Estilos personalizados */
+    body {
+        padding-top: 20px;
+      }
+  
+      .container {
+        max-width: 600px;
+      }
+  
+      .main-title {
+        margin-bottom: 20px;
+      }
+  
+      .form-group {
+        margin-bottom: 20px;
+      }
+  
+      #calcular {
+        margin-top: 20px;
+      }
+  
+      #costo {
+        margin-top: 20px;
+      }
