@@ -59,7 +59,7 @@ function calcular() {
   }
 
   const precio = valormano + valormaterial;
-  cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p>Los costos son ${precio} pesos</p>`
+  cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Los costos son ${precio} pesos</p>`
   cartel.style.display = "block";
   fondo.style.display = "block";
 }
@@ -137,9 +137,9 @@ class MaterialesManager {
       listaHTML +=
         `<div class="row pw-3
          align-items-center">` +
-        `<div class="col-4"><input type='number' id='material${index}' name='material${index}' class="form-control" value="0" placeholder="0"/></div>` +
-        `<div class="col-5">${material.nombre} - $${material.costo}</div>` +
-        `<div class="col-3"><button onclick="materialesManager.eliminarMaterial(${index})" class="btn btn-primary">Eliminar</button></div>` +
+        `<div class="col-4 col-lg-2"><input type='number' id='material${index}' name='material${index}' class="form-control" value="0" placeholder="0"/></div>` +
+        `<div class="col-5 col-lg-2">${material.nombre} - $${material.costo}</div>` +
+        `<div class="col-3 col-lg-2"><button onclick="materialesManager.eliminarMaterial(${index})" class="btn btn-primary">Eliminar</button></div>` +
         `</div>`;
     });
     listaHTML += `</div>`;
@@ -156,7 +156,7 @@ class MaterialesManager {
     const fondo =document.getElementById("fondo");
 
     if (this.materiales.some((material) => material.nombre === nombre)) {
-      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()">&times;</span><p>El material '${nombre}' ya existe en la lista.</p>`
+      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()">&times;</span><p class="p-2">El material '${nombre}' ya existe en la lista.</p>`
       cartel.style.display = "block";
       fondo.style.display = "block";
 
@@ -164,7 +164,7 @@ class MaterialesManager {
       this.materiales.push({ nombre, costo });
       this.guardarMateriales();
       this.mostrarMateriales();
-      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p>Material '${nombre}' agregado correctamente.</p>`
+      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Material '${nombre}' agregado correctamente.</p>`
       cartel.style.display = "block";
       fondo.style.display = "block";
 
@@ -181,7 +181,7 @@ class MaterialesManager {
     this.materiales.splice(index, 1);
     this.guardarMateriales();
     this.mostrarMateriales();
-    cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p>Material '${nombre}' eliminado correctamente.</p>`
+    cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Material '${nombre}' eliminado correctamente.</p>`
     cartel.style.display = "block";
     fondo.style.display = "block";
   }
