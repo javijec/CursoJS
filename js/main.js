@@ -27,8 +27,6 @@ function mostrarCostosMano() {
 function calcular() {
   const trabajoCheckbox = document.getElementById("trabajo");
   const materialCheckbox = document.getElementById("material");
-  const cartel = document.getElementById("cartel");
-  const fondo =document.getElementById("fondo");
   const htrabajo = document.getElementById("htrabajo").value;
   const dtrabajo = document.getElementById("dtrabajo").value;
   const mano = manoDeObra.valor;
@@ -59,9 +57,7 @@ function calcular() {
   }
 
   const precio = valormano + valormaterial;
-  cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Los costos son ${precio} pesos</p>`
-  cartel.style.display = "block";
-  fondo.style.display = "block";
+  cartel(`Los costos son ${precio} pesos`) 
 }
 
 //Cambiar valores de la mano de Obra
@@ -152,22 +148,15 @@ class MaterialesManager {
     const costoInput = document.getElementById("costo-material");
     const nombre = nombreInput.value;
     const costo = parseInt(costoInput.value);
-    const cartel =document.getElementById("cartel");
-    const fondo =document.getElementById("fondo");
 
     if (this.materiales.some((material) => material.nombre === nombre)) {
-      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()">&times;</span><p class="p-2">El material '${nombre}' ya existe en la lista.</p>`
-      cartel.style.display = "block";
-      fondo.style.display = "block";
+      cartel(`El material '${nombre}' ya existe en la lista.`)
 
     } else {
       this.materiales.push({ nombre, costo });
       this.guardarMateriales();
       this.mostrarMateriales();
-      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Material '${nombre}' agregado correctamente.</p>`
-      cartel.style.display = "block";
-      fondo.style.display = "block";
-
+      cartel(`Material '${nombre}' agregado correctamente.`)
     }
 
     nombreInput.value = "";
@@ -176,21 +165,16 @@ class MaterialesManager {
 
   eliminarMaterial(index) {
     const nombre = this.materiales[index].nombre;
-    const cartel =document.getElementById("cartel");
-    const fondo =document.getElementById("fondo");
     this.materiales.splice(index, 1);
     this.guardarMateriales();
     this.mostrarMateriales();
-    cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Material '${nombre}' eliminado correctamente.</p>`
-    cartel.style.display = "block";
-    fondo.style.display = "block";
+    cartel(`Material '${nombre}' eliminado correctamente`)
   }
 }
 
 const materialesManager = new MaterialesManager();
 
 
-function cerrarCartel() {
-  document.getElementById("cartel").style.display = "none";
-  document.getElementById("fondo").style.display = "none";
+function cartel(texto) {
+  swal(texto, "", "success");
 }
