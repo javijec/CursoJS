@@ -48,7 +48,7 @@ function calcular() {
   }
 
   const precio = valormano + valormaterial;
-  cartel(`Los costos son ${precio} pesos`) 
+  cartel(`Los costos son ${precio} pesos`,opcion) 
 }
 
 //Cambiar valores de la mano de Obra
@@ -165,6 +165,12 @@ class MaterialesManager {
 const materialesManager = new MaterialesManager();
 
 
-function cartel(texto) {
-  swal(texto, "", "success");
+function cartel(texto, opcion) {
+  if (opcion === 0){
+    swal ( "Oops" ,  "no eligio ninguna de las opciones de costos" ,  "error" )
+
+  }else{
+    swal(texto, "", "success");
+  }
+  
 }
