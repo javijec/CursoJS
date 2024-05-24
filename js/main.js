@@ -1,23 +1,14 @@
 let manoDeObra;
 let materiales;
 
-/* const nombreInput = document.getElementById("nombre");
- */
+
 const calcularButton = document.getElementById("botoncalc");
 const formulario2 = document.getElementById("formulario2");
 
-/* nombreInput.addEventListener("change", cargarNombre);
- */
+
 calcularButton.addEventListener("click", calcular);
 formulario2.addEventListener("submit", actualizarValorManodeObra);
 
-/* function cargarNombre() {
-  const nombre = nombreInput.value;
-  const contieneNumerosOSimbolos =
-    /[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(nombre);
-  nombreInput.classList.toggle("alert", contieneNumerosOSimbolos);
-  return nombre;
-} */
 
 function mostrarCostosMano() {
   const costomano = document.getElementById("costomano");
@@ -128,15 +119,14 @@ class MaterialesManager {
   }
 
   mostrarMateriales() {
-    let listaHTML = `<div>`;
+    let listaHTML = `<div class="m-2">`;
     this.materiales.forEach((material, index) => {
       listaHTML +=
-        `<div class="row pw-3
-         align-items-center">` +
-        `<div class="col-4 col-lg-2"><input type='number' id='material${index}' name='material${index}' class="form-control" value="0" placeholder="0"/></div>` +
-        `<div class="col-5 col-lg-2">${material.nombre} - $${material.costo}</div>` +
-        `<div class="col-3 col-lg-2"><button onclick="materialesManager.eliminarMaterial(${index})" class="btn btn-primary">Eliminar</button></div>` +
-        `</div>`;
+        `<div class="flex pw-3 items-center">
+        <div class="px-2 max-w-[100px]"><input type='number' id='material${index}' name='material${index}' class=" w-full border border-gray-300 rounded-md shadow-sm p-2" value="0" placeholder="0"/></div>
+        <div class="px-2 w-[200px]">${material.nombre} - $${material.costo}</div>
+        <div class="px-2"><button onclick="materialesManager.eliminarMaterial(${index})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Eliminar</button></div>
+        </div>`;
     });
     listaHTML += `</div>`;
     this.materialesLista2.innerHTML = listaHTML;
