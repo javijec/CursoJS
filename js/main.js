@@ -1,161 +1,184 @@
-let manoDeObra;
-let materiales;
-
-const calcularButton = document.getElementById("botoncalc");
-const formulario2 = document.getElementById("formulario2");
-
-calcularButton.addEventListener("click", calcular);
-formulario2.addEventListener("submit", actualizarValorManodeObra);
-
+// Load data from local storage
+let laborCost;
+let materials;
 loadLocalStorage();
-actualizarManodeObra();
 
+// Event listeners
+const calculateButton = document.getElementById("botoncalc");
+const form = document.getElementById("formulario2");
+calculateButton.addEventListener("click", calculateCosts);
+form.addEventListener("submit", updateLaborCost);
 
-function calcular() {
-  const trabajoCheckbox = document.getElementById("trabajo");
-  const materialCheckbox = document.getElementById("material");
-  const htrabajo = document.getElementById("htrabajo").value;
-  const dtrabajo = document.getElementById("dtrabajo").value;
-  const mano = manoDeObra.valor;
-  let valormaterial = 0;
-  let valormano = 0;
-  const opcion =
-    Number(materialCheckbox.checked) + Number(trabajoCheckbox.checked) * 2;
-  const calcularValorMaterial = () => {
-    materiales.forEach((material, index) => {
-      valormaterial +=
+// Update labor cost placeholder
+updateLaborCostPlaceholder();
+
+// Calculate costs
+function calculateCosts() {
+  const laborCheckbox = document.getElementById("trabajo");
+  const materialsCheckbox = document.getElementById("material");
+  const hoursWorked = document.getElementById("htrabajo").value;
+  const dailyRate = document.getElementById("dtrabajo").value;
+  let totalMaterialCost = 0;
+  let totalLaborCost = 0;
+  const selectedOption =
+    Number(materialsCheckbox.checked) + Number(laborCheckbox.checked) * 2;
+
+  // Calculate total material cost
+  const calculateTotalMaterialCost = () => {
+    materials.forEach((material, index) => {
+      totalMaterialCost +=
         document.getElementById("material" + index).value * material.costo;
     });
   };
 
-  switch (opcion) {
+  // Calculate total labor cost
+  const calculateTotalLaborCost = () => {
+    totalLaborCost = hoursWorked * dailyRate * laborCost.valor;
+  };
+
+  // Calculate costs based on selected option
+  switch (selectedOption) {
     case 1:
-      calcularValorMaterial();
+      calculateTotalMaterialCost();
       break;
     case 2:
-      valormano = htrabajo * dtrabajo * mano;
+      calculateTotalLaborCost();
       break;
     case 3:
-      calcularValorMaterial();
-      valormano = htrabajo * dtrabajo * mano;
+      calculateTotalMaterialCost();
+      calculateTotalLaborCost();
       break;
     default:
       break;
   }
 
-  const precio = valormano + valormaterial;
-  cartel(`Los costos son ${precio} pesos`, opcion);
+  // Calculate total cost
+  const totalCost = totalLaborCost + totalMaterialCost;
+  displayAlert(`Los costos son ${totalCost} pesos`, selectedOption);
 }
 
-//Cambiar valores de la mano de Obra
-function actualizarValorManodeObra(event) {
+// Update labor cost
+function updateLaborCost(event) {
   event.preventDefault();
-  const texto = document.getElementById("texto");
-  const costo = document.getElementById("costomano");
-  manoDeObra.valor = costo.value;
-  costomano.placeholder = costo.value;
-  savemanoDeObra();
+  const laborCostInput = document.getElementById("costomano");
+  laborCost.valor = laborCostInput.value;
+  laborCostInput.placeholder = laborCostInput.value;
+  saveLaborCost();
 }
 
-function savemanoDeObra() {
-  localStorage.setItem("costo", JSON.stringify(manoDeObra));
+// Save labor cost to local storage
+function saveLaborCost() {
+  localStorage.setItem("costo", JSON.stringify(laborCost));
 }
 
-function actualizarManodeObra() {
-  const costo = document.getElementById("costomano");
-  if (manoDeObra.valor !== undefined) {
-    costomano.placeholder = manoDeObra.valor;
+// Update labor cost placeholder
+function updateLaborCostPlaceholder() {
+  const laborCostInput = document.getElementById("costomano");
+  if (laborCost.valor !== undefined) {
+    laborCostInput.placeholder = laborCost.valor;
   }
 }
 
-//cargar datos del localstorage
+// Load data from local storage
 function loadLocalStorage() {
-  // Si no hay valores, cargar el array proporcionado y guardarlo en el localStorage
-  if (!localStorage.getItem("materiales")) {
+  materials = JSON.parse(localStorage.getItem("materiales")) || [];
+  laborCost = JSON.parse(localStorage.getItem("costo")) || {};
+
+  // If no materials data, fetch from JSON file and save to local storage
+  if (materials.length === 0) {
     fetch("json/materiales.json")
       .then((response) => response.json())
-      .then((data) => localStorage.setItem("materiales", JSON.stringify(data)))
+      .then((data) => {
+        materials = data;
+        localStorage.setItem("materiales", JSON.stringify(materials));
+      })
       .catch((error) => console.error("Error:", error));
   }
 
-  // Si no hay valores, establecer un valor predeterminado y guardarlo en el localStorage
-  if (!localStorage.getItem("costo")) {
+  // If no labor cost data, fetch from JSON file and save to local storage
+  if (Object.keys(laborCost).length === 0) {
     fetch("json/costo.json")
       .then((response) => response.json())
-      .then((data) => localStorage.setItem("costo", JSON.stringify(data)));
+      .then((data) => {
+        laborCost = data;
+        localStorage.setItem("costo", JSON.stringify(laborCost));
+      })
+      .catch((error) => console.error("Error:", error));
   }
-  materiales = JSON.parse(localStorage.getItem("materiales"));
-  manoDeObra = JSON.parse(localStorage.getItem("costo"));
 }
 
-
-// Clase para manejar los materiales
-class MaterialesManager {
+// Class for managing materials
+class MaterialsManager {
   constructor() {
-    this.materiales = this.cargarMateriales();
-    this.formulario = document.getElementById("formulario-agregar");
-    this.materialesLista2 = document.getElementById("materiales-lista2");
-    this.formulario.addEventListener("submit", this.agregarMaterial.bind(this));
-    this.mostrarMateriales();
+    this.materials = this.loadMaterials();
+    this.form = document.getElementById("formulario-agregar");
+    this.materialsList = document.getElementById("materiales-lista2");
+    this.form.addEventListener("submit", this.addMaterial.bind(this));
+    this.displayMaterials();
   }
 
-  cargarMateriales() {
+  // Load materials from local storage
+  loadMaterials() {
     return JSON.parse(localStorage.getItem("materiales")) || [];
   }
 
-  guardarMateriales() {
-    localStorage.setItem("materiales", JSON.stringify(this.materiales));
+  // Save materials to local storage
+  saveMaterials() {
+    localStorage.setItem("materiales", JSON.stringify(this.materials));
   }
 
-  mostrarMateriales() {
-    let listaHTML = `<div class="m-2">`;
-    this.materiales.forEach((material, index) => {
-      listaHTML += `<div class="flex pw-3 items-center">
+  // Display materials in HTML
+  displayMaterials() {
+    let materialsListHTML = `<div class="m-2">`;
+    this.materials.forEach((material, index) => {
+      materialsListHTML += `<div class="flex pw-3 items-center">
         <div class="px-2 max-w-[100px]"><input type='number' id='material${index}' name='material${index}' class=" w-full border border-gray-300 rounded-md shadow-sm p-2" value="0" placeholder="0"/></div>
         <div class="px-2 w-[200px]">${material.nombre} - $${material.costo}</div>
-        <div class="px-2"><button onclick="materialesManager.eliminarMaterial(${index})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Eliminar</button></div>
+        <div class="px-2"><button onclick="materialsManager.removeMaterial(${index})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Eliminar</button></div>
         </div>`;
     });
-    listaHTML += `</div>`;
-    this.materialesLista2.innerHTML = listaHTML;
+    materialsListHTML += `</div>`;
+    this.materialsList.innerHTML = materialsListHTML;
   }
 
-  agregarMaterial(event) {
+  // Add material
+  addMaterial(event) {
     event.preventDefault();
-    const nombreInput = document.getElementById("nombre-material");
-    const costoInput = document.getElementById("costo-material");
-    const nombre = nombreInput.value;
-    const costo = parseInt(costoInput.value);
+    const nameInput = document.getElementById("nombre-material");
+    const costInput = document.getElementById("costo-material");
+    const name = nameInput.value;
+    const cost = parseInt(costInput.value);
 
-    if (this.materiales.some((material) => material.nombre === nombre)) {
-      cartel(`El material '${nombre}' ya existe en la lista.`);
+    if (this.materials.some((material) => material.nombre === name)) {
+      displayAlert(`El material '${name}' ya existe en la lista.`);
     } else {
-      this.materiales.push({ nombre, costo });
-      this.guardarMateriales();
-      this.mostrarMateriales();
-      cartel(`Material '${nombre}' agregado correctamente.`);
+      this.materials.push({ nombre: name, costo: cost });
+      this.saveMaterials();
+      this.displayMaterials();
+      displayAlert(`Material '${name}' agregado correctamente.`);
     }
 
-    nombreInput.value = "";
-    costoInput.value = "";
+    nameInput.value = "";
+    costInput.value = "";
   }
 
-  eliminarMaterial(index) {
-    const nombre = this.materiales[index].nombre;
-    this.materiales.splice(index, 1);
-    this.guardarMateriales();
-    this.mostrarMateriales();
-    cartel(`Material '${nombre}' eliminado correctamente`);
+  // Remove material
+  removeMaterial(index) {
+    const name = this.materials[index].nombre;
+    this.materials.splice(index, 1);
+    this.saveMaterials();
+    this.displayMaterials();
+    displayAlert(`Material '${name}' eliminado correctamente`);
   }
 }
 
-const materialesManager = new MaterialesManager();
+const materialsManager = new MaterialsManager();
 
-//alertas
-function cartel(texto, opcion) {
-  if (opcion === 0) {
+// Display alert
+function displayAlert(text, option) {
+  if (option === 0) {
     swal("Oops", "no eligio ninguna de las opciones de costos", "error");
   } else {
-    swal(texto, "", "success");
+    swal(text, "", "success");
   }
 }
