@@ -1,19 +1,15 @@
 let manoDeObra;
 let materiales;
 
-
 const calcularButton = document.getElementById("botoncalc");
 const formulario2 = document.getElementById("formulario2");
-
 
 calcularButton.addEventListener("click", calcular);
 formulario2.addEventListener("submit", actualizarValorManodeObra);
 
+loadLocalStorage();
+actualizarManodeObra();
 
-function mostrarCostosMano() {
-  const costomano = document.getElementById("costomano");
-  costomano.innerHTML = `El valor de la hora de mano de obra es ${manoDeObra.valor} pesos`;
-}
 
 function calcular() {
   const trabajoCheckbox = document.getElementById("trabajo");
@@ -24,11 +20,11 @@ function calcular() {
   let valormaterial = 0;
   let valormano = 0;
   const opcion =
-    Number(materialCheckbox.checked) + Number(trabajoCheckbox.checked)*2;
+    Number(materialCheckbox.checked) + Number(trabajoCheckbox.checked) * 2;
   const calcularValorMaterial = () => {
     materiales.forEach((material, index) => {
       valormaterial +=
-        document.getElementById("material"+ index).value * material.costo;
+        document.getElementById("material" + index).value * material.costo;
     });
   };
 
@@ -48,57 +44,50 @@ function calcular() {
   }
 
   const precio = valormano + valormaterial;
-  cartel(`Los costos son ${precio} pesos`,opcion) 
+  cartel(`Los costos son ${precio} pesos`, opcion);
 }
 
 //Cambiar valores de la mano de Obra
 function actualizarValorManodeObra(event) {
-  const texto = document.getElementById("texto");
-  const costo2 = document.getElementById("costomano2");
   event.preventDefault();
-  manoDeObra.valor = costo2.value;
-  costomano2.placeholder = costo2.value;
-  guardarManodeObraEnLocalStorage();
+  const texto = document.getElementById("texto");
+  const costo = document.getElementById("costomano");
+  manoDeObra.valor = costo.value;
+  costomano.placeholder = costo.value;
+  savemanoDeObra();
 }
 
-function guardarManodeObraEnLocalStorage() {
+function savemanoDeObra() {
   localStorage.setItem("costo", JSON.stringify(manoDeObra));
 }
 
-function cargarValorManodeObra() {
-  const costo2 = document.getElementById("costomano2");
+function actualizarManodeObra() {
+  const costo = document.getElementById("costomano");
   if (manoDeObra.valor !== undefined) {
-    costomano2.placeholder = manoDeObra.valor;
+    costomano.placeholder = manoDeObra.valor;
   }
 }
 
 //cargar datos del localstorage
-function cargarLocalStorage() {
-  // Verificar si hay valores en el localStorage para 'materiales'
-  if (localStorage.getItem("materiales")) {
-    // Si hay valores, cargarlos en la variable 'materiales'
-    materiales = JSON.parse(localStorage.getItem("materiales"));
-  } else {
-    // Si no hay valores, cargar el array proporcionado y guardarlo en el localStorage
-    materiales = [{"nombre":"Peras","costo":10},{"nombre":"Manzanas","costo":1}];
-    localStorage.setItem("materiales", JSON.stringify(materiales));
+function loadLocalStorage() {
+  // Si no hay valores, cargar el array proporcionado y guardarlo en el localStorage
+  if (!localStorage.getItem("materiales")) {
+    fetch("json/materiales.json")
+      .then((response) => response.json())
+      .then((data) => localStorage.setItem("materiales", JSON.stringify(data)))
+      .catch((error) => console.error("Error:", error));
   }
-  
-  // Verificar si hay valores en el localStorage para 'costo'
-  if (localStorage.getItem("costo")) {
-    // Si hay valores, cargarlos en la variable 'manoDeObra'
-    manoDeObra = JSON.parse(localStorage.getItem("costo"));
-  } else {
-    // Si no hay valores, establecer un valor predeterminado y guardarlo en el localStorage
-    manoDeObra = { valor: 1 };
-    localStorage.setItem("costo", JSON.stringify(manoDeObra));
+
+  // Si no hay valores, establecer un valor predeterminado y guardarlo en el localStorage
+  if (!localStorage.getItem("costo")) {
+    fetch("json/costo.json")
+      .then((response) => response.json())
+      .then((data) => localStorage.setItem("costo", JSON.stringify(data)));
   }
-  
+  materiales = JSON.parse(localStorage.getItem("materiales"));
+  manoDeObra = JSON.parse(localStorage.getItem("costo"));
 }
 
-
-cargarLocalStorage();
-cargarValorManodeObra();
 
 // Clase para manejar los materiales
 class MaterialesManager {
@@ -121,8 +110,7 @@ class MaterialesManager {
   mostrarMateriales() {
     let listaHTML = `<div class="m-2">`;
     this.materiales.forEach((material, index) => {
-      listaHTML +=
-        `<div class="flex pw-3 items-center">
+      listaHTML += `<div class="flex pw-3 items-center">
         <div class="px-2 max-w-[100px]"><input type='number' id='material${index}' name='material${index}' class=" w-full border border-gray-300 rounded-md shadow-sm p-2" value="0" placeholder="0"/></div>
         <div class="px-2 w-[200px]">${material.nombre} - $${material.costo}</div>
         <div class="px-2"><button onclick="materialesManager.eliminarMaterial(${index})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Eliminar</button></div>
@@ -140,13 +128,12 @@ class MaterialesManager {
     const costo = parseInt(costoInput.value);
 
     if (this.materiales.some((material) => material.nombre === nombre)) {
-      cartel(`El material '${nombre}' ya existe en la lista.`)
-
+      cartel(`El material '${nombre}' ya existe en la lista.`);
     } else {
       this.materiales.push({ nombre, costo });
       this.guardarMateriales();
       this.mostrarMateriales();
-      cartel(`Material '${nombre}' agregado correctamente.`)
+      cartel(`Material '${nombre}' agregado correctamente.`);
     }
 
     nombreInput.value = "";
@@ -158,19 +145,17 @@ class MaterialesManager {
     this.materiales.splice(index, 1);
     this.guardarMateriales();
     this.mostrarMateriales();
-    cartel(`Material '${nombre}' eliminado correctamente`)
+    cartel(`Material '${nombre}' eliminado correctamente`);
   }
 }
 
 const materialesManager = new MaterialesManager();
 
-
+//alertas
 function cartel(texto, opcion) {
-  if (opcion === 0){
-    swal ( "Oops" ,  "no eligio ninguna de las opciones de costos" ,  "error" )
-
-  }else{
+  if (opcion === 0) {
+    swal("Oops", "no eligio ninguna de las opciones de costos", "error");
+  } else {
     swal(texto, "", "success");
   }
-  
 }
