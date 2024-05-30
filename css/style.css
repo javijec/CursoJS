@@ -1,96 +1,11 @@
-/* .alert {
-    border: 2px solid red;
-    background-color: rgba(255, 0, 0, 0.186);
-} */
-
-body {
-    background-color: #f8f9fa; /* Color de fondo */
-  }
-
-  header {
-    background-color: #343a40; /* Color de fondo del encabezado */
-    padding: 20px;
-    color: white; /* Color del texto */
-    text-align: center;
-  }
-
-  main {
-    background-color: #fff; /* Color de fondo del contenido principal */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
-  }
-
-  .form-label {
-    font-weight: bold; /* Texto en negrita para las etiquetas de formulario */
-  }
-
-  .form-control {
-    margin-bottom: 10px; /* Espacio entre elementos de formulario */
-  }
-
-  .btn-primary {
-    background-color: #007bff; /* Color de fondo del botón primario */
-    border-color: #007bff; /* Color del borde del botón primario */
-  }
-
-  .btn-primary:hover {
-    background-color: #0056b3; /* Color de fondo del botón primario al pasar el ratón */
-    border-color: #0056b3; /* Color del borde del botón primario al pasar el ratón */
-  }
-
-  footer {
-    text-align: center;
-    margin-top: 20px;
-    color: #6c757d; /* Color del texto del pie de página */
-  }
-
-
-  #cartel {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff; /* Cambia el color de fondo al mismo que el contenido principal */
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px; /* Usa el mismo radio de borde que el contenido principal */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra igual a la del contenido principal */
-    z-index: 1000;
-    display: none;
-  }
-#fondo { 
-  background-color: #acacacb7;
-  position: fixed;
-  top: 0%;
-  left: 0%;
-  height: 100vh;
-  width: 100vw;
-  z-index: 999;
-  display: none;
-}
-  
-  .cerrar {
-    color: #6c757d; /* Color de texto igual al del pie de página */
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    cursor: pointer;
+.quantity-button {
+    @apply bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-l hover:bg-gray-300 cursor-pointer;
   }
   
-  .cerrar:hover {
-    color: red; /* Cambia el color al mismo que el hover del botón primario */
+  .quantity-button:last-child {
+    @apply rounded-r;
   }
-
-  .oculto {
-    display: none;
+  
+  .quantity-input {
+    @apply w-16 text-center border-t border-b border-gray-300 py-2 px-4;
   }
-
-  .cerrar-imagen {
-    width: 20px; /* Ajusta el ancho de la imagen según tus necesidades */
-    height: 20px; /* Ajusta la altura de la imagen según tus necesidades */
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    cursor: pointer;
-}

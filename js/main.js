@@ -1,196 +1,247 @@
-let manoDeObra;
-let materiales;
+// Load data from local storage
+let laborCost;
+let materials;
+loadLocalStorage();
 
-/* const nombreInput = document.getElementById("nombre");
- */
-const calcularButton = document.getElementById("botoncalc");
-const formulario2 = document.getElementById("formulario2");
+// Event listeners
+const calculateButton = document.getElementById("botoncalc");
+const form = document.getElementById("formulario2");
+const currencySelector = document.getElementById("currency-selector");
+calculateButton.addEventListener("click", calculateCosts);
+form.addEventListener("submit", updateLaborCost);
+currencySelector.addEventListener("change", updateExchangeRate);
 
-/* nombreInput.addEventListener("change", cargarNombre);
- */
-calcularButton.addEventListener("click", calcular);
-formulario2.addEventListener("submit", actualizarValorManodeObra);
+// Update labor cost placeholder
+updateLaborCostPlaceholder();
 
-/* function cargarNombre() {
-  const nombre = nombreInput.value;
-  const contieneNumerosOSimbolos =
-    /[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(nombre);
-  nombreInput.classList.toggle("alert", contieneNumerosOSimbolos);
-  return nombre;
-} */
+// Exchange rate
+let exchangeRate = 1;
 
-function mostrarCostosMano() {
-  const costomano = document.getElementById("costomano");
-  costomano.innerHTML = `El valor de la hora de mano de obra es ${manoDeObra.valor} pesos`;
+// Update exchange rate
+async function updateExchangeRate() {
+  if (currencySelector.value === "dolar") {
+    const response = await fetch("https://api.bluelytics.com.ar/v2/latest");
+    const data = await response.json();
+    exchangeRate = data.blue.value_sell;
+  } else {
+    exchangeRate = 1;
+  }
 }
 
-function calcular() {
-  const trabajoCheckbox = document.getElementById("trabajo");
-  const materialCheckbox = document.getElementById("material");
-  const cartel = document.getElementById("cartel");
-  const fondo =document.getElementById("fondo");
-  const htrabajo = document.getElementById("htrabajo").value;
-  const dtrabajo = document.getElementById("dtrabajo").value;
-  const mano = manoDeObra.valor;
-  let valormaterial = 0;
-  let valormano = 0;
-  const opcion =
-    Number(materialCheckbox.checked) + Number(trabajoCheckbox.checked)*2;
-  const calcularValorMaterial = () => {
-    materiales.forEach((material, index) => {
-      valormaterial +=
-        document.getElementById("material"+ index).value * material.costo;
-    });
+// Calculate costs
+function calculateCosts() {
+  const laborCheckbox = document.getElementById("trabajo");
+  const materialsCheckbox = document.getElementById("material");
+  const hoursWorked = document.getElementById("htrabajo").value;
+  const dailyRate = document.getElementById("dtrabajo").value;
+  let totalMaterialCost = 0;
+  let totalLaborCost = 0;
+  const selectedOption =
+    Number(materialsCheckbox.checked) + Number(laborCheckbox.checked) * 2;
+
+  // Calculate total material cost if the checkbox is selected
+  const calculateTotalMaterialCost = () => {
+    if (materialsCheckbox.checked) {
+      totalMaterialCost = materials.reduce((acc, material, index) => {
+        return (
+          acc + document.getElementById("material" + index).value * material.costo
+        );
+      }, 0);
+    }
   };
 
-  switch (opcion) {
+// Calculate total labor cost if the checkbox is selected
+const calculateTotalLaborCost = () => {
+  if (laborCheckbox.checked) {
+    const laborCostValue = laborCost.valor !== undefined && laborCost.valor !== "" ? laborCost.valor : laborCost.valorAlmacenado;
+    totalLaborCost = hoursWorked * dailyRate * laborCostValue;
+  }
+};
+
+
+  // Calculate costs based on selected option
+  switch (selectedOption) {
     case 1:
-      calcularValorMaterial();
+      calculateTotalMaterialCost();
       break;
     case 2:
-      valormano = htrabajo * dtrabajo * mano;
+      calculateTotalLaborCost();
       break;
     case 3:
-      calcularValorMaterial();
-      valormano = htrabajo * dtrabajo * mano;
+      calculateTotalMaterialCost();
+      calculateTotalLaborCost();
       break;
     default:
       break;
   }
 
-  const precio = valormano + valormaterial;
-  cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Los costos son ${precio} pesos</p>`
-  cartel.style.display = "block";
-  fondo.style.display = "block";
+  // Calculate total cost in selected currency
+  const totalCost = (totalLaborCost + totalMaterialCost) / exchangeRate;
+  const currencySymbol = currencySelector.value === "dolar" ? "$" : "AR$";
+  displayAlert(
+    `Los costos son ${currencySymbol}${totalCost.toFixed(2)}`,
+    selectedOption
+  );
+
+  // Save labor cost to local storage
+  saveLaborCost();
 }
 
-//Cambiar valores de la mano de Obra
-function actualizarValorManodeObra(event) {
-  const texto = document.getElementById("texto");
-  const costo2 = document.getElementById("costomano2");
+// Update labor cost
+function updateLaborCost(event) {
   event.preventDefault();
-  manoDeObra.valor = costo2.value;
-  costomano2.placeholder = costo2.value;
-  guardarManodeObraEnLocalStorage();
+  const laborCostInput = document.getElementById("costomano");
+  laborCost.valor = laborCostInput.value;
+  laborCostInput.placeholder = laborCostInput.value;
+  saveLaborCost();
 }
 
-function guardarManodeObraEnLocalStorage() {
-  localStorage.setItem("costo", JSON.stringify(manoDeObra));
+// Add event listener to labor cost input field
+const laborCostInput = document.getElementById("costomano");
+laborCostInput.addEventListener("input", () => {
+  laborCost.valor = laborCostInput.value;
+});
+
+// Save labor cost to local storage
+function saveLaborCost() {
+  laborCost.valorAlmacenado = laborCost.valor;
+  localStorage.setItem("costo", JSON.stringify(laborCost));
 }
 
-function cargarValorManodeObra() {
-  const costo2 = document.getElementById("costomano2");
-  if (manoDeObra.valor !== undefined) {
-    costomano2.placeholder = manoDeObra.valor;
+
+// Update labor cost placeholder
+function updateLaborCostPlaceholder() {
+  const laborCostInput = document.getElementById("costomano");
+  if (laborCost.valor !== undefined) {
+    laborCostInput.placeholder = laborCost.valor;
   }
 }
 
-//cargar datos del localstorage
-function cargarLocalStorage() {
-  // Verificar si hay valores en el localStorage para 'materiales'
-  if (localStorage.getItem("materiales")) {
-    // Si hay valores, cargarlos en la variable 'materiales'
-    materiales = JSON.parse(localStorage.getItem("materiales"));
-  } else {
-    // Si no hay valores, cargar el array proporcionado y guardarlo en el localStorage
-    materiales = [{"nombre":"Peras","costo":10},{"nombre":"Manzanas","costo":1}];
-    localStorage.setItem("materiales", JSON.stringify(materiales));
+// Load data from local storage
+function loadLocalStorage() {
+  materials = JSON.parse(localStorage.getItem("materiales")) || [];
+  laborCost = JSON.parse(localStorage.getItem("costo")) || {};
+
+  // If no materials data, fetch from JSON file and save to local storage
+  if (materials.length === 0) {
+    fetch("json/materiales.json")
+      .then((response) => response.json())
+      .then((data) => {
+        materials = data;
+        localStorage.setItem("materiales", JSON.stringify(materials));
+      })
+      .catch((error) => console.error("Error:", error));
   }
-  
-  // Verificar si hay valores en el localStorage para 'costo'
-  if (localStorage.getItem("costo")) {
-    // Si hay valores, cargarlos en la variable 'manoDeObra'
-    manoDeObra = JSON.parse(localStorage.getItem("costo"));
-  } else {
-    // Si no hay valores, establecer un valor predeterminado y guardarlo en el localStorage
-    manoDeObra = { valor: 1 };
-    localStorage.setItem("costo", JSON.stringify(manoDeObra));
+
+  // If no labor cost data, fetch from JSON file and save to local storage
+  if (Object.keys(laborCost).length === 0) {
+    fetch("json/costo.json")
+      .then((response) => response.json())
+      .then((data) => {
+        laborCost = data;
+        localStorage.setItem("costo", JSON.stringify(laborCost));
+      })
+      .catch((error) => console.error("Error:", error));
   }
-  
 }
 
-
-cargarLocalStorage();
-cargarValorManodeObra();
-
-// Clase para manejar los materiales
-class MaterialesManager {
+// Class for managing materials
+class MaterialsManager {
   constructor() {
-    this.materiales = this.cargarMateriales();
-    this.formulario = document.getElementById("formulario-agregar");
-    this.materialesLista2 = document.getElementById("materiales-lista2");
-    this.formulario.addEventListener("submit", this.agregarMaterial.bind(this));
-    this.mostrarMateriales();
+    this.materials = this.loadMaterials();
+    this.form = document.getElementById("formulario-agregar");
+    this.materialsList = document.getElementById("materiales-lista2");
+    this.form.addEventListener("submit", this.addMaterial.bind(this));
+    this.displayMaterials();
   }
 
-  cargarMateriales() {
+  // Load materials from local storage
+  loadMaterials() {
     return JSON.parse(localStorage.getItem("materiales")) || [];
   }
 
-  guardarMateriales() {
-    localStorage.setItem("materiales", JSON.stringify(this.materiales));
+  // Save materials to local storage
+  saveMaterials() {
+    localStorage.setItem("materiales", JSON.stringify(this.materials));
   }
 
-  mostrarMateriales() {
-    let listaHTML = `<div>`;
-    this.materiales.forEach((material, index) => {
-      listaHTML +=
-        `<div class="row pw-3
-         align-items-center">` +
-        `<div class="col-4 col-lg-2"><input type='number' id='material${index}' name='material${index}' class="form-control" value="0" placeholder="0"/></div>` +
-        `<div class="col-5 col-lg-2">${material.nombre} - $${material.costo}</div>` +
-        `<div class="col-3 col-lg-2"><button onclick="materialesManager.eliminarMaterial(${index})" class="btn btn-primary">Eliminar</button></div>` +
-        `</div>`;
+  // Display materials in HTML
+  displayMaterials() {
+    let materialsListHTML = "";
+    this.materials.forEach((material, index) => {
+      materialsListHTML += `
+        <div class="flex items-center py-2">
+          <button class="quantity-button bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-l hover:bg-gray-300 cursor-pointer">-</button>
+          <input type="number" id="material${index}" name="material${index}" class="quantity-input w-16 text-center border-t border-b border-gray-300 py-2 px-4" value="0" min="0" readonly>
+          <button class="quantity-button bg-gray-200 text-gray-700 font-bold py-2 px-4  hover:bg-gray-300 cursor-pointer rounded-r">+</button>
+          <div class="px-2 w-[200px]">${material.nombre} - ARS$ ${material.costo}</div>
+          <div class="px-2">
+            <button onclick="materialsManager.removeMaterial(${index})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
+          </div>
+        </div>
+      `;
     });
-    listaHTML += `</div>`;
-    this.materialesLista2.innerHTML = listaHTML;
+    this.materialsList.innerHTML = materialsListHTML;
+
+    // Add event listeners to quantity buttons
+    document.querySelectorAll(".quantity-button").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        const input =
+          event.target.parentElement.querySelector(".quantity-input");
+        const action = event.target.textContent;
+        let value = parseInt(input.value);
+        if (action === "+") {
+          value++;
+        } else if (action === "-" && value > 0) {
+          value--;
+        }
+        input.value = value;
+      });
+    });
   }
 
-  agregarMaterial(event) {
+  // Add material
+  addMaterial(event) {
     event.preventDefault();
-    const nombreInput = document.getElementById("nombre-material");
-    const costoInput = document.getElementById("costo-material");
-    const nombre = nombreInput.value;
-    const costo = parseInt(costoInput.value);
-    const cartel =document.getElementById("cartel");
-    const fondo =document.getElementById("fondo");
+    const nameInput = document.getElementById("nombre-material");
+    const costInput = document.getElementById("costo-material");
+    const name = nameInput.value;
+    const cost = parseInt(costInput.value);
 
-    if (this.materiales.some((material) => material.nombre === nombre)) {
-      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()">&times;</span><p class="p-2">El material '${nombre}' ya existe en la lista.</p>`
-      cartel.style.display = "block";
-      fondo.style.display = "block";
-
+    if (this.materials.some((material) => material.nombre === name)) {
+      displayAlert(`El material '${name}' ya existe en la lista.`);
     } else {
-      this.materiales.push({ nombre, costo });
-      this.guardarMateriales();
-      this.mostrarMateriales();
-      cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Material '${nombre}' agregado correctamente.</p>`
-      cartel.style.display = "block";
-      fondo.style.display = "block";
-
+      this.materials.push({ nombre: name, costo: cost });
+      this.saveMaterials();
+      this.displayMaterials();
+      displayAlert(`Material '${name}' agregado correctamente.`);
+      // Update the materials variable
+      materials = this.materials;
     }
 
-    nombreInput.value = "";
-    costoInput.value = "";
+    nameInput.value = "";
+    costInput.value = "";
   }
 
-  eliminarMaterial(index) {
-    const nombre = this.materiales[index].nombre;
-    const cartel =document.getElementById("cartel");
-    const fondo =document.getElementById("fondo");
-    this.materiales.splice(index, 1);
-    this.guardarMateriales();
-    this.mostrarMateriales();
-    cartel.innerHTML = `<span class="cerrar" onclick="cerrarCartel()"><img src="img/close_button.png" alt="Cerrar" class="cerrar-imagen"></span><p class="p-2">Material '${nombre}' eliminado correctamente.</p>`
-    cartel.style.display = "block";
-    fondo.style.display = "block";
+  // Remove material
+  removeMaterial(index) {
+    const name = this.materials[index].nombre;
+    this.materials.splice(index, 1);
+    this.saveMaterials();
+    this.displayMaterials();
+    displayAlert(`Material '${name}' eliminado correctamente`);
+    // Update the materials variable
+    materials = this.materials;
   }
 }
 
-const materialesManager = new MaterialesManager();
+const materialsManager = new MaterialsManager();
 
-
-function cerrarCartel() {
-  document.getElementById("cartel").style.display = "none";
-  document.getElementById("fondo").style.display = "none";
+// Display alert
+function displayAlert(text, option) {
+  if (option === 0) {
+    swal("Oops", "no eligio ninguna de las opciones de costos", "error");
+  } else {
+    swal(text, "", "success");
+  }
 }
