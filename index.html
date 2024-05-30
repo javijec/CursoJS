@@ -5,85 +5,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora</title>
-  <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="bg-slate-50 ">
-  <header class="p-[20px] text-white bg-zinc-800 text-center">
-    <h1 class="text-3xl font-bold">Calculadora de Costos</h1>
+<body class="bg-slate-50">
+  <header class="p-4 text-white bg-zinc-800 text-center">
+    <h1 class="text-2xl font-bold sm:text-3xl">Calculadora de Costos</h1>
   </header>
 
-  <main class="max-w-[600px] mx-auto rounded-lg bg-white">
-    <h2 class="text-xl font-semibold m-2">Configuración</h2>
-    <div class="m-2">
-      <label for="currency-selector" class="font-medium">Moneda:</label>
-      <select id="currency-selector" class="border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
-        <option value="peso">Peso Argentino</option>
-        <option value="dolar">Dólar Americano</option>
-      </select>
+  <main class="mx-auto p-4 rounded-lg bg-white sm:p-6 md:p-8">
+    <!-- Costs Section -->
+    <div class="flex flex-col mb-4 sm:flex-row sm:mb-6">
+      <!-- Manual Labor Costs -->
+      <div class="w-full mb-4 sm:w-1/2 sm:pr-2 sm:mb-0">
+        <h2 class="text-xl font-semibold sm:text-2xl">Costos mano de obra</h2>
+        <div class="mt-2">
+          <input type="checkbox" id="trabajo" name="Costo de trabajo">
+          <label for="trabajo">Calcular costos de mano de obra</label>
+        </div>
+        <form id="formulario2" class="mt-2">
+          <div class="mb-2">
+            <label for="costomano" class="font-medium">Valor hora (ARS$):</label>
+            <input type="number" id="costomano" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" placeholder="Ingrese el valor hora" required>
+          </div>
+          <div class="mb-2">
+            <label for="htrabajo" class="font-medium">Horas/día (ARS$):</label>
+            <input type="number" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" id="htrabajo" name="htrabajo" value="0" placeholder="Ingrese las horas por día">
+          </div>
+          <div class="mb-2">
+            <label for="dtrabajo" class="font-medium">Días:</label>
+            <input type="number" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" id="dtrabajo" name="dtrabajo" value="0" placeholder="Ingrese la cantidad de días">
+          </div>
+          <div class="mt-2">
+            <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700">Guardar valor hora</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Material Costs -->
+      <div class="w-full sm:w-1/2 sm:pl-2">
+        <h2 class="text-xl font-semibold sm:text-2xl">Costos de materiales</h2>
+        <div class="mt-2">
+          <input type="checkbox" id="material" name="materiales">
+          <label for="material">Calcular costos de materiales</label>
+        </div>
+        <div id="materiales-lista2" class="mt-2">
+          <!-- Materials will be displayed here -->
+        </div>
+        <h3 class="mt-2 text-lg font-semibold">Agregar materiales</h3>
+        <form id="formulario-agregar" class="mt-2">
+          <div class="flex items-center">
+            <div>
+              <label for="nombre-material" class="py-2 px-2">Material:</label>
+            </div>
+            <div class="max-w-[100px]">
+              <input type="text" id="nombre-material" class="w-full p-2 border border-gray-300 rounded-md shadow-sm" placeholder="Nombre del material" required>
+            </div>
+            <div class="px-2">
+              <label for="costo-material">ARS$ </label>
+            </div>
+            <div class="max-w-[100px]">
+              <input type="number" id="costo-material" class="w-full p-2 border border-gray-300 rounded-md shadow-sm" placeholder="Costo" required>
+            </div>
+            <div class="px-2">
+              <button type="submit" class="px-3 py-2 text-white bg-blue-500 rounded hover:bg-blue-700">Agregar material</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-  
-    <h2 class="text-xl font-semibold m-2">¿Qué costo desea incluir en su presupuesto?</h2>
-    <div class="m-2">
-      <input type="checkbox" id="trabajo" name="Costo de trabajo">
-      <label for="trabajo">Costo de trabajo</label>
+    <!-- Configuration Section -->
+    <div class="mb-4 border-b border-gray-200 sm:mb-6">
+      <h2 class="text-xl font-semibold sm:text-2xl">¿En que moneda quiere explesar el presupuesto?</h2>
+      <div class="mt-2">
+        <label for="currency-selector" class="font-medium">Moneda:</label>
+        <select id="currency-selector" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+          <option value="peso">Peso Argentino</option>
+          <option value="dolar">Dólar Americano</option>
+        </select>
+      </div>
     </div>
-    <div class="m-2">
-      <input type="checkbox" id="material" name="materiales">
-      <label for="material">Costo de materiales</label>
-    </div>
-  
-    <h2 class="text-xl font-semibold m-2">Costos mano de obra</h2>
-    <form id="formulario2">
-      <div class="m-2">
-        <label for="costomano" class="font-medium">Valor hora:</label>
-        <input type="number" id="costomano" class="border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" placeholder="Ingrese el valor hora" required>
-      </div>
-      <div class="m-2">
-        <label for="htrabajo" class="font-medium">Horas/día:</label>
-        <input type="number" class="border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" id="htrabajo" name="htrabajo" value="0" placeholder="Ingrese las horas por día">
-      </div>
-      <div class="m-2">
-        <label for="dtrabajo" class="font-medium">Días:</label>
-        <input type="number" class="border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" id="dtrabajo" name="dtrabajo" value="0" placeholder="Ingrese la cantidad de días">
-      </div>
-      <div class="m-2">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Guardar valor hora</button>
-      </div>
-    </form>
-  
-    <h2 class="text-xl font-semibold m-2">Costos de materiales</h2>
-    <div id="materiales-lista2" class="m-2">
-      <!-- Aquí se mostrará la lista de materiales -->
-    </div>
-  
-    <h2 class="text-xl font-semibold m-2">Agregar materiales</h2>
-    <form id="formulario-agregar" class="m-2">
-      <div class="flex items-center">
-        <div>
-          <label for="nombre-material" class="py-2 px-2">Material:</label>
-        </div>
-        <div class="max-w-[100px]">
-          <input type="text" id="nombre-material" class="w-full border border-gray-300 rounded-md shadow-sm py-2 px-2" placeholder="Nombre del material" required>
-        </div>
-        <div class="px-2">
-          <label for="costo-material">$</label>
-        </div>
-        <div class="max-w-[100px]">
-          <input type="number" id="costo-material" class="w-full border border-gray-300 rounded-md shadow-sm py-2 px-2" placeholder="Costo" required>
-        </div>
-        <div class="px-2">
-          <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded">Agregar material</button>
-        </div>
-      </div>
-    </form>
-  
-    <div class="m-2">
-      <button id="botoncalc" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Calcular costos</button>
+    <!-- Calculate Button Section -->
+    <div class="text-center">
+      <button id="botoncalc" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700">Calcular costos</button>
     </div>
   </main>
-  
-  <footer class="py-4 text-center mt-[20px] text-gray-400">
+
+  <footer class="py-4 text-center text-gray-400">
     Javier Camargo &copy; 2024 - Todos los derechos reservados
   </footer>
 
