@@ -1,0 +1,11 @@
+.quantity-button {
+    @apply bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-l hover:bg-gray-300 cursor-pointer;
+  }
+  
+  .quantity-button:last-child {
+    @apply rounded-r;
+  }
+  
+  .quantity-input {
+    @apply w-16 text-center border-t border-b border-gray-300 py-2 px-4;
+  }
