@@ -6,11 +6,27 @@ loadLocalStorage();
 // Event listeners
 const calculateButton = document.getElementById("botoncalc");
 const form = document.getElementById("formulario2");
+const currencySelector = document.getElementById("currency-selector");
 calculateButton.addEventListener("click", calculateCosts);
 form.addEventListener("submit", updateLaborCost);
+currencySelector.addEventListener("change", updateExchangeRate);
 
 // Update labor cost placeholder
 updateLaborCostPlaceholder();
+
+// Exchange rate
+let exchangeRate = 1;
+
+// Update exchange rate
+async function updateExchangeRate() {
+  if (currencySelector.value === "dolar") {
+    const response = await fetch("https://api.bluelytics.com.ar/v2/latest");
+    const data = await response.json();
+    exchangeRate = data.blue.value_sell;
+  } else {
+    exchangeRate = 1;
+  }
+}
 
 // Calculate costs
 function calculateCosts() {
@@ -23,13 +39,12 @@ function calculateCosts() {
   const selectedOption =
     Number(materialsCheckbox.checked) + Number(laborCheckbox.checked) * 2;
 
-  // Calculate total material cost
-  const calculateTotalMaterialCost = () => {
-    materials.forEach((material, index) => {
-      totalMaterialCost +=
-        document.getElementById("material" + index).value * material.costo;
-    });
-  };
+// Calculate total material cost
+const calculateTotalMaterialCost = () => {
+  totalMaterialCost = materials.reduce((acc, material, index) => {
+    return acc + document.getElementById("material" + index).value * material.costo;
+  }, 0);
+};
 
   // Calculate total labor cost
   const calculateTotalLaborCost = () => {
@@ -52,9 +67,10 @@ function calculateCosts() {
       break;
   }
 
-  // Calculate total cost
-  const totalCost = totalLaborCost + totalMaterialCost;
-  displayAlert(`Los costos son ${totalCost} pesos`, selectedOption);
+  // Calculate total cost in selected currency
+  const totalCost = (totalLaborCost + totalMaterialCost) / exchangeRate;
+  const currencySymbol = currencySelector.value === "dolar" ? "$" : "AR$";
+  displayAlert(`Los costos son ${currencySymbol}${totalCost.toFixed(2)}`, selectedOption);
 }
 
 // Update labor cost
@@ -133,7 +149,7 @@ class MaterialsManager {
     this.materials.forEach((material, index) => {
       materialsListHTML += `<div class="flex pw-3 items-center">
         <div class="px-2 max-w-[100px]"><input type='number' id='material${index}' name='material${index}' class=" w-full border border-gray-300 rounded-md shadow-sm p-2" value="0" placeholder="0"/></div>
-        <div class="px-2 w-[200px]">${material.nombre} - $${material.costo}</div>
+        <div class="px-2 w-[200px]">${material.nombre} - ARS$ ${material.costo}</div>
         <div class="px-2"><button onclick="materialsManager.removeMaterial(${index})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Eliminar</button></div>
         </div>`;
     });

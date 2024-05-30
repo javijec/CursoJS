@@ -13,8 +13,15 @@
     <h1 class="text-3xl font-bold">Calculadora de Costos</h1>
   </header>
 
-  <main class="max-w-[600px] mx-auto rounded-lg bg-white">
-
+<main class="max-w-[600px] mx-auto rounded-lg bg-white">
+  <div class="m-2">
+    <label for="currency-selector" class="font-medium">Moneda:</label>
+    <select id="currency-selector" class="border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+      <option value="peso">Peso Argentino</option>
+      <option value="dolar">Dólar Americano</option>
+    </select>
+  </div>
+  
     <div class="m-2">
       <h3 class="text-xl font-semibold">¿Qué costo desea incluir en su presupuesto?</h3>
       <div>
@@ -28,7 +35,7 @@
     </div>
 
     <div id="Costosmanodeobra" class="m-2">
-      <h3 class="text-xl font-semibold">Costos mano de obra</h3>
+      <h3 class="text-xl font-semibold">Costos mano de obra en ARS$</h3>
       <div>
         <form id="formulario2">
           <div class="m-2">
@@ -81,7 +88,7 @@
               required>
           </div>
           <div class="px-2">
-            <label for="costo-material">$</label>
+            <label for="costo-material">ARS$</label>
           </div>
           <div class="max-w-[100px]">
             <input type="number" id="costo-material" class="w-full border border-gray-300 rounded-md shadow-sm py-2 px-2"
