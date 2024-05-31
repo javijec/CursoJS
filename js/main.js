@@ -1,3 +1,4 @@
+
 async function loadLocalStorage() {
   const materialPromise = new Promise((resolve, reject) => {
     materials = JSON.parse(localStorage.getItem("materiales")) || [];
@@ -41,118 +42,8 @@ async function loadLocalStorage() {
   }
 }
 
-// Esperar a que los datos se carguen antes de crear la instancia de MaterialsManager
-loadLocalStorage()
-  .then(() => {
-  // Tasa de cambio
-  let exchangeRate = 1;
-
-  // Escuchadores de eventos
-  const calculateButton = document.getElementById("botoncalc");
-  const form = document.getElementById("formulario2");
-  const currencySelector = document.getElementById("currency-selector");
-  const laborCostInput = document.getElementById("costomano");
+loadLocalStorage().then(() => {
   laborCostInput.placeholder = laborCost.valor;
-
-  calculateButton.addEventListener("click", calculateCosts);
-  form.addEventListener("submit", updateLaborCost);
-  currencySelector.addEventListener("change", updateExchangeRate);
-  laborCostInput.addEventListener("input", () => {
-    laborCost.valor = laborCostInput.value;
-  });
-
-  // Actualizar la tasa de cambio
-  async function updateExchangeRate() {
-    if (currencySelector.value === "dolar") {
-      const response = await fetch("https://api.bluelytics.com.ar/v2/latest");
-      const data = await response.json();
-      exchangeRate = data.blue.value_sell;
-    } else {
-      exchangeRate = 1;
-    }
-  }
-
-  // Calcular costos
-  function calculateCosts() {
-    const laborCheckbox = document.getElementById("trabajo");
-    const materialsCheckbox = document.getElementById("material");
-    const hoursWorked = document.getElementById("htrabajo").value;
-    const dailyRate = document.getElementById("dtrabajo").value;
-    let totalMaterialCost = 0;
-    let totalLaborCost = 0;
-    const selectedOption =
-      Number(materialsCheckbox.checked) + Number(laborCheckbox.checked) * 2;
-
-    // Calculate total material cost if the checkbox is selected
-    const calculateTotalMaterialCost = () => {
-      if (materialsCheckbox.checked) {
-        totalMaterialCost = materials.reduce((acc, material, index) => {
-          return (
-            acc +
-            document.getElementById("material" + index).value * material.costo
-          );
-        }, 0);
-      }
-    };
-
-    // Calculate total labor cost if the checkbox is selected
-    const calculateTotalLaborCost = () => {
-      if (laborCheckbox.checked) {
-        if (laborCostInput.value !== undefined && laborCostInput.value !== "") {
-          laborCostValue = laborCostInput.value;
-          saveLaborCost();
-        } else {
-          laborCostValue = JSON.parse(localStorage.getItem("costo")).valor;
-        }
-        totalLaborCost = hoursWorked * dailyRate * laborCostValue;
-      }
-    };
-
-    // Calculate costs based on selected option
-    switch (selectedOption) {
-      case 1:
-        calculateTotalMaterialCost();
-        break;
-      case 2:
-        calculateTotalLaborCost();
-        break;
-      case 3:
-        calculateTotalMaterialCost();
-        calculateTotalLaborCost();
-        break;
-      default:
-        break;
-    }
-
-    // Calculate total cost in selected currency
-    const totalCost = (totalLaborCost + totalMaterialCost) / exchangeRate;
-    const currencySymbol = currencySelector.value === "dolar" ? "$" : "AR$";
-    displayAlert(
-      `Los costos son ${currencySymbol}${totalCost.toFixed(2)}`,
-      selectedOption
-    );
-
-    // Save labor cost to local storage
-    if (laborCostInput.valor !== undefined) {
-      saveLaborCost();
-    }
-  }
-
-  // Actualizar el costo de mano de obra
-  function updateLaborCost(event) {
-    event.preventDefault();
-    const laborCostInput = document.getElementById("costomano");
-    if (laborCostInput.value !== undefined && laborCostInput.value !== "") {
-      laborCostValue = laborCostInput.value;
-      saveLaborCost();
-    }
-  }
-
-  // Guardar el costo de mano de obra en el almacenamiento local
-  function saveLaborCost() {
-    localStorage.setItem("costo", JSON.stringify(laborCost));
-    laborCostInput.placeholder = laborCostInput.value;
-  }
 
   // Clase para gestionar materiales
   class MaterialsManager {
@@ -218,13 +109,13 @@ loadLocalStorage()
       const cost = parseInt(costInput.value);
 
       if (this.materials.some((material) => material.nombre === name)) {
-        displayAlert(`El material '${name}' ya existe en la lista.`);
+        swal(`El material '${name}' ya existe en la lista.`, "", "success");
       } else {
         this.materials.push({ nombre: name, costo: cost });
         this.saveMaterials();
         this.displayMaterials();
-        displayAlert(`Material '${name}' agregado correctamente.`);
-        // Update the materials variable
+        swal(`Material '${name}' agregado correctamente.`, "", "success");
+      // Update the materials variable
         materials = this.materials;
       }
 
@@ -238,20 +129,101 @@ loadLocalStorage()
       this.materials.splice(index, 1);
       this.saveMaterials();
       this.displayMaterials();
-      displayAlert(`Material '${name}' eliminado correctamente`);
+      swal(`Material '${name}' eliminado correctamente`, "", "success");
       // Update the materials variable
       materials = this.materials;
     }
   }
-
   const materialsManager = new MaterialsManager();
-
-  // Mostrar alerta
-  function displayAlert(text, option) {
-    if (option === 0) {
-      swal("Oops", "no eligio ninguna de las opciones de costos", "error");
-    } else {
-      swal(text, "", "success");
-    }
-  }
 });
+
+
+const calculateButton = document.getElementById("botoncalc");
+const form = document.getElementById("formulario2");
+const laborCostInput = document.getElementById("costomano");
+
+
+calculateButton.addEventListener("click", calculateCosts);
+form.addEventListener("submit", updateLaborCost);
+laborCostInput.addEventListener("input", () => {laborCost.valor = laborCostInput.value;});
+
+
+// Calcular costos
+function calculateCosts() {
+  const laborCheckbox = document.getElementById("trabajo");
+  const materialsCheckbox = document.getElementById("material");
+  const hoursWorked = document.getElementById("htrabajo").value;
+  const dailyRate = document.getElementById("dtrabajo").value;
+  let totalMaterialCost = 0;
+  let totalLaborCost = 0;
+  
+  const selectedOption =
+    Number(materialsCheckbox.checked) + Number(laborCheckbox.checked) * 2;
+
+  // Calculate total material cost if the checkbox is selected
+  const calculateTotalMaterialCost = () => {
+    if (materialsCheckbox.checked) {
+      totalMaterialCost = materials.reduce((acc, material, index) => {
+        return (
+          acc +
+          document.getElementById("material" + index).value * material.costo
+        );
+      }, 0);
+    }
+  };
+
+  // Calculate total labor cost if the checkbox is selected
+  const calculateTotalLaborCost = () => {
+    if (laborCheckbox.checked) {
+      if (laborCostInput.value !== undefined && laborCostInput.value !== "") {
+        laborCostValue = laborCostInput.value;
+        saveLaborCost();
+      } else {
+        laborCostValue = JSON.parse(localStorage.getItem("costo")).valor;
+      }
+      totalLaborCost = hoursWorked * dailyRate * laborCostValue;
+    }
+  };
+
+  // Calculate costs based on selected option
+  switch (selectedOption) {
+    case 1:
+      calculateTotalMaterialCost();
+      break;
+    case 2:
+      calculateTotalLaborCost();
+      break;
+    case 3:
+      calculateTotalMaterialCost();
+      calculateTotalLaborCost();
+      break;
+    default:
+      break;
+  }
+
+  // Calculate total cost in selected currency
+  const totalCost = (totalLaborCost + totalMaterialCost) / exchangeRate;
+  const currencySymbol = currencySelector.value === "dolar" ? "$" : "ARS$";
+  swal(`Los costos son ${currencySymbol}${totalCost.toFixed(2)}`, "", "success");
+
+  // Save labor cost to local storage
+  if (laborCostInput.valor !== undefined) {
+    saveLaborCost();
+  }
+}
+
+// Actualizar el costo de mano de obra
+function updateLaborCost(event) {
+  event.preventDefault();
+  const laborCostInput = document.getElementById("costomano");
+  if (laborCostInput.value !== undefined && laborCostInput.value !== "") {
+    laborCostValue = laborCostInput.value;
+    saveLaborCost();
+  }
+}
+
+// Guardar el costo de mano de obra en el almacenamiento local
+function saveLaborCost() {
+  localStorage.setItem("costo", JSON.stringify(laborCost));
+  laborCostInput.placeholder = laborCostInput.value;
+}
