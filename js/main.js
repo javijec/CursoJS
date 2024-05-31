@@ -176,7 +176,6 @@ function calculateCosts() {
   const calculateTotalLaborCost = () => {
     if (laborCheckbox.checked) {
       if (laborCostInput.value !== undefined && laborCostInput.value !== "") {
-        laborCostValue = laborCostInput.value;
         saveLaborCost();
       } else {
         laborCostValue = JSON.parse(localStorage.getItem("costo")).valor;
@@ -204,26 +203,26 @@ function calculateCosts() {
   // Calculate total cost in selected currency
   const totalCost = (totalLaborCost + totalMaterialCost) / exchangeRate;
   const currencySymbol = currencySelector.value === "dolar" ? "$" : "ARS$";
+  
   swal(`Los costos son ${currencySymbol}${totalCost.toFixed(2)}`, "", "success");
+   saveLaborCost();
 
-  // Save labor cost to local storage
-  if (laborCostInput.valor !== undefined) {
-    saveLaborCost();
-  }
 }
 
 // Actualizar el costo de mano de obra
 function updateLaborCost(event) {
   event.preventDefault();
   const laborCostInput = document.getElementById("costomano");
-  if (laborCostInput.value !== undefined && laborCostInput.value !== "") {
-    laborCostValue = laborCostInput.value;
-    saveLaborCost();
-  }
+  saveLaborCost();
+
 }
 
 // Guardar el costo de mano de obra en el almacenamiento local
 function saveLaborCost() {
-  localStorage.setItem("costo", JSON.stringify(laborCost));
-  laborCostInput.placeholder = laborCostInput.value;
+  if (laborCostInput.value !== undefined && laborCostInput.value !== "") {
+    laborCostValue = laborCostInput.value;
+    localStorage.setItem("costo", JSON.stringify(laborCost));
+    laborCostInput.placeholder = laborCostInput.value;
+  }
+  
 }
