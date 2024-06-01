@@ -1,44 +1,24 @@
-
 async function loadLocalStorage() {
-  const materialPromise = new Promise((resolve, reject) => {
-    materials = JSON.parse(localStorage.getItem("materiales")) || [];
+  materials = JSON.parse(localStorage.getItem("materiales")) || [];
 
-    if (materials.length === 0) {
-      fetch("json/materiales.json")
-        .then((response) => response.json())
-        .then((data) => {
-          materials = data;
-          localStorage.setItem("materiales", JSON.stringify(materials));
-          resolve();
-        })
-        .catch((error) => reject(error));
-    } else {
-      resolve();
-    }
-  });
+  if (materials.length === 0) {
+    await fetch("json/materiales.json")
+      .then((response) => response.json())
+      .then((data) => {
+        materials = data;
+        localStorage.setItem("materiales", JSON.stringify(materials));
+      });
+  }
 
-  const laborCostPromise = new Promise((resolve, reject) => {
-    laborCost = JSON.parse(localStorage.getItem("costo")) || {};
+  laborCost = JSON.parse(localStorage.getItem("costo")) || {};
 
-    if (Object.keys(laborCost).length === 0) {
-      fetch("json/costo.json")
-        .then((response) => response.json())
-        .then((data) => {
-          laborCost = data;
-          localStorage.setItem("costo", JSON.stringify(laborCost));
-          resolve();
-        })
-        .catch((error) => reject(error));
-    } else {
-      resolve();
-    }
-  });
-
-  try {
-    await Promise.all([materialPromise, laborCostPromise]);
-    console.log("Datos cargados correctamente");
-  } catch (error) {
-    console.error("Error al cargar datos:", error);
+  if (Object.keys(laborCost).length === 0) {
+    await fetch("json/costo.json")
+      .then((response) => response.json())
+      .then((data) => {
+        laborCost = data;
+        localStorage.setItem("costo", JSON.stringify(laborCost));
+      });
   }
 }
 
@@ -115,7 +95,7 @@ loadLocalStorage().then(() => {
         this.saveMaterials();
         this.displayMaterials();
         swal(`Material '${name}' agregado correctamente.`, "", "success");
-      // Update the materials variable
+        // Update the materials variable
         materials = this.materials;
       }
 
@@ -137,16 +117,16 @@ loadLocalStorage().then(() => {
   const materialsManager = new MaterialsManager();
 });
 
-
 const calculateButton = document.getElementById("botoncalc");
 const form = document.getElementById("formulario2");
 const laborCostInput = document.getElementById("costomano");
 
-
 calculateButton.addEventListener("click", calculateCosts);
 form.addEventListener("submit", updateLaborCost);
-laborCostInput.addEventListener("input", () => {laborCost.valor = laborCostInput.value;});
-
+laborCostInput.addEventListener(
+  "input",
+  () => (laborCost.valor = laborCostInput.value)
+);
 
 // Calcular costos
 function calculateCosts() {
@@ -156,7 +136,7 @@ function calculateCosts() {
   const dailyRate = document.getElementById("dtrabajo").value;
   let totalMaterialCost = 0;
   let totalLaborCost = 0;
-  
+
   const selectedOption =
     Number(materialsCheckbox.checked) + Number(laborCheckbox.checked) * 2;
 
@@ -203,10 +183,13 @@ function calculateCosts() {
   // Calculate total cost in selected currency
   const totalCost = (totalLaborCost + totalMaterialCost) / exchangeRate;
   const currencySymbol = currencySelector.value === "dolar" ? "$" : "ARS$";
-  
-  swal(`Los costos son ${currencySymbol}${totalCost.toFixed(2)}`, "", "success");
-   saveLaborCost();
 
+  swal(
+    `Los costos son ${currencySymbol}${totalCost.toFixed(2)}`,
+    "",
+    "success"
+  );
+  saveLaborCost();
 }
 
 // Actualizar el costo de mano de obra
@@ -214,7 +197,6 @@ function updateLaborCost(event) {
   event.preventDefault();
   const laborCostInput = document.getElementById("costomano");
   saveLaborCost();
-
 }
 
 // Guardar el costo de mano de obra en el almacenamiento local
@@ -224,5 +206,4 @@ function saveLaborCost() {
     localStorage.setItem("costo", JSON.stringify(laborCost));
     laborCostInput.placeholder = laborCostInput.value;
   }
-  
 }
