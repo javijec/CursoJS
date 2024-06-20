@@ -53,7 +53,7 @@ loadLocalStorage().then(() => {
           <div class="flex items-center py-2">
             <button class="quantity-button bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-l hover:bg-gray-300 cursor-pointer">-</button>
             <input type="number" id="material${index}" name="material${index}" class="quantity-input w-16 text-center border-t border-b border-gray-300 py-2 px-4" value="0" min="0" readonly>
-            <button class="quantity-button bg-gray-200 text-gray-700 font-bold py-2 px-4  hover:bg-gray-300 cursor-pointer rounded-r">+</button>
+            <button class="quantity-button bg-gray-200 text-gray-700 font-bold py-2 px-4 hover:bg-gray-300 cursor-pointer rounded-r">+</button>
             <div class="px-2 w-[200px]">${material.nombre} - ARS$ ${material.costo}</div>
             <div class="px-2">
               <button onclick="materialsManager.removeMaterial(${index})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Eliminar</button>
@@ -114,7 +114,9 @@ loadLocalStorage().then(() => {
       materials = this.materials;
     }
   }
-  const materialsManager = new MaterialsManager();
+
+  // Asegúrate de que materialsManager sea accesible en el ámbito global
+  window.materialsManager = new MaterialsManager();
 });
 
 const calculateButton = document.getElementById("botoncalc");
